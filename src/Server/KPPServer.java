@@ -20,7 +20,8 @@ public class KPPServer
 	private static Connection c;
 	private static Statement st;
 	private static PrintWriter writer;
-
+	private static ArrayList<String> list = new ArrayList<String>();
+	
 //Коннектиться к БД 
 private static void setDB() 
 {
@@ -77,6 +78,7 @@ private static void setDB()
 						if(message.equals("keySecretKPPMessanger11"))
 						{
 							streams.remove(pw); // удаляем райтер при закрытии окна пользователем
+							streams.trimToSize();
 						}
 						else
 						{
@@ -94,9 +96,10 @@ private static void setDB()
 
 	private static void spreadInChat(String msg)
 	{
-		int cut = msg.indexOf(' ');
-		//String login = msg.substring(0, cut);
-		
+		int cut = msg.indexOf(' ') + 1;
+		String login = msg.substring(0, cut-2);
+		String text = msg.substring(cut);
+		String hello = login + ": I have connected!";
 		//save(login,msg);
 		
 		java.util.Iterator<PrintWriter> iter = streams.iterator();
@@ -105,9 +108,30 @@ private static void setDB()
 		{
 			try
 			{
+				if(msg.equals(hello))
+				{
+					list.add(login);
+					writer.println("forlist" + list.get( list.size()-1 ));
+					writer.flush();
+					for(int i=0; i<list.size()-1; i++)
+					{
+						writer.println("forlist" + list.get( i ));
+						writer.flush();
+					}
+				}
+				
+				if(!text.equals(""))
+				{
 				writer = iter.next();
+				//writer.println("forlist" + list.get());
 				writer.println(msg);
 				writer.flush();
+				}
+				else
+				{
+					writer = iter.next();
+					writer.flush();
+				}
 			}
 			catch(Exception e)
 			{
@@ -136,7 +160,7 @@ private static void setDB()
 
 	private static void createGUI() 
 	{
-		
+		//logins[0] = "nikogdaneyuzainicketot";
 		streams = new ArrayList<PrintWriter>();
 		try 
 		{

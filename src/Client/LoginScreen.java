@@ -3,7 +3,6 @@ package Client;
 import java.awt.Cursor;
 import java.awt.EventQueue;
 import java.awt.Font;
-import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -14,6 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -35,7 +35,7 @@ public class LoginScreen extends JFrame {
 
 	private static Connection c;
 	private static Statement st;
-
+	final static ImageIcon longIcon = new ImageIcon("icon.png");
 	// Устанавливает конекшн к БД
 private static void setDB() 
 {
@@ -69,7 +69,8 @@ LoginScreen()
 }
 
 private void initGUI()
-{
+{	
+	
 	try 
 	{
 		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());

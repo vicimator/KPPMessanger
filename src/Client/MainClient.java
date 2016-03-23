@@ -14,10 +14,13 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.ArrayList;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -50,6 +53,30 @@ public class MainClient extends JFrame {
 	private JMenu mnHelp;
 	private JMenuItem mntmAbout;
 	private static boolean closing = false;
+	private static JList usersList;
+	final static DefaultListModel listModel = new DefaultListModel();
+	private static ArrayList<String> list = new ArrayList<String>();
+	private static boolean listCheck = false;
+	
+	public static void toList(String nick)
+	{
+		try
+		{
+			for(int i=0; i<listModel.size(); i++)
+			{
+				if(listModel.getElementAt(i).toString().equals(nick)) throw new Exception("Dat nick is already in use!");
+			}
+	
+	        listModel.addElement(nick);
+	        int index = listModel.size() - 1;
+	        usersList.setSelectedIndex(index);
+	        usersList.ensureIndexIsVisible(index);
+		}
+		catch(Exception e)
+		{
+			System.out.println("Got it.");
+		}
+	}
 	
 	private static void virtualNet()
 	{
@@ -118,6 +145,7 @@ public class MainClient extends JFrame {
 			public void actionPerformed(ActionEvent a) 
 			{
 				writer.println(nickname+": I have logged out."); // Отправляем сообщение серверу
+				writer.println("keySecretKPPMessanger11");
 				writer.flush(); // Перекрываем поток, чтобы сообщение отправилось корректно
 				closing = true;
 				dispose();
@@ -150,9 +178,9 @@ public class MainClient extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		GridBagLayout gbl_contentPane = new GridBagLayout();
-		gbl_contentPane.columnWidths = new int[]{0, 450, 0, 150};
+		gbl_contentPane.columnWidths = new int[]{0, 450, 0, 140, 10};
 		gbl_contentPane.rowHeights = new int[]{15, 245, 0, 20, 200};
-		gbl_contentPane.columnWeights = new double[]{1.0, 1.0, 1.0, Double.MIN_VALUE};
+		gbl_contentPane.columnWeights = new double[]{1.0, 1.0, 1.0, 0.0, 1.0};
 		gbl_contentPane.rowWeights = new double[]{1.0, 1.0, 0.0, 0.0, 0.0};
 		contentPane.setLayout(gbl_contentPane);
 		
@@ -164,7 +192,7 @@ public class MainClient extends JFrame {
 		gbc_txtHistory.gridheight = 2;
 		gbc_txtHistory.gridwidth = 3;
 		gbc_txtHistory.fill = GridBagConstraints.BOTH;
-		gbc_txtHistory.insets = new Insets(0, 0, 5, 5);
+		gbc_txtHistory.insets = new Insets(5, 0, 5, 5);
 		gbc_txtHistory.gridx = 0;
 		gbc_txtHistory.gridy = 0;
 		txtHistory.setLineWrap(true);
@@ -175,6 +203,23 @@ public class MainClient extends JFrame {
         scrolltxt.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         scrolltxt.setViewportView(txtHistory);
 		contentPane.add(scrolltxt, gbc_txtHistory);
+		
+        usersList = new JList(listModel);
+        GridBagConstraints gbc_list = new GridBagConstraints();
+        gbc_list.gridwidth = 2;
+        gbc_list.gridheight = 4;
+        gbc_list.insets = new Insets(5, 0, 5, 5);
+        gbc_list.fill = GridBagConstraints.BOTH;
+        gbc_list.gridx = 3;
+        gbc_list.gridy = 0;
+        JScrollPane scrolList = new JScrollPane();
+        scrolList.setWheelScrollingEnabled(true);
+        scrolList.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrolList.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        scrolList.setViewportView(usersList);
+		contentPane.add(scrolList, gbc_list);
+       // usersList.setLayoutOrientation(JList.VERTICAL_WRAP);
+        //contentPane.add(usersList, gbc_list);
 		
         txtMessage = new JTextField();
 		txtMessage.setFont(new Font("MS Reference Sans Serif", Font.PLAIN, 13));
@@ -206,7 +251,7 @@ public class MainClient extends JFrame {
 		GridBagConstraints gbc_logged = new GridBagConstraints();
 		gbc_logged.anchor = GridBagConstraints.NORTHEAST;
 		gbc_logged.gridwidth = 3;
-		gbc_logged.insets = new Insets(0, 0, 5, 5);
+		gbc_logged.insets = new Insets(0, 0, 0, 5);
 		gbc_logged.gridx = 0;
 		gbc_logged.gridy = 4;
 		gbc_logged.ipadx = 100;
@@ -243,7 +288,6 @@ public class MainClient extends JFrame {
 		});
 		//System.out.println(nickname + " " + password);
 	}
-
 	
 	private static class Obdt implements Runnable
 	{
@@ -255,10 +299,34 @@ public class MainClient extends JFrame {
 			{
 				while( (message=reader.readLine()) != null) // Пока сообщение есть, он добавляет его в конец и Enter
 				{
-					if(message != null)
-					{
-					txtHistory.append(message+"\n");
-					}
+						if(message.startsWith("forlist"))
+						{
+							String nick = message.substring(7);
+							
+							if(list.size() == 0) 
+							{
+								list.add(nick);
+								toList(nick);
+							}
+							else
+							{
+								for(int i=0; i<list.size(); i++)
+								{
+									if(!list.get(i).equals(nick)) 
+									{
+										toList(nick);
+										break;
+									}
+								}
+								
+								
+							}
+						}
+						else
+						{
+						txtHistory.append(message + '\n');
+						}
+					
 				}
 			}
 			catch(Exception e)
@@ -277,7 +345,7 @@ public class MainClient extends JFrame {
 			if(txtMessage.getText() == null){ message = null; }
 			else
 			{
-			message = nickname + ": " + '\n' + txtMessage.getText() + '\n'; // Записываем строку, которую нужно отправить
+			message = nickname + ": " + txtMessage.getText(); // Записываем строку, которую нужно отправить
 			writer.println(message); // Отправляем сообщение серверу
 			writer.flush(); // Перекрываем поток, чтобы сообщение отправилось корректно
 			}
