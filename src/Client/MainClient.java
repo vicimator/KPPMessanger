@@ -32,6 +32,7 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.EmptyBorder;
+import java.awt.Toolkit;
 
 public class MainClient extends JFrame {
 	
@@ -57,6 +58,7 @@ public class MainClient extends JFrame {
 	final static DefaultListModel listModel = new DefaultListModel();
 	private static ArrayList<String> list = new ArrayList<String>();
 	private static boolean listCheck = false;
+	private JButton btnPrivate;
 	
 	public static void toList(String nick)
 	{
@@ -78,6 +80,19 @@ public class MainClient extends JFrame {
 		}
 	}
 	
+	public static void fromList(String nick)
+	{
+		for(int i=0; i<listModel.size(); i++)
+		{
+			if(listModel.getElementAt(i).toString().equals(nick)) 
+				{
+					listModel.removeElementAt(i);
+					break;
+				}
+		}
+		
+	}
+	
 	private static void virtualNet()
 	{
 		try 
@@ -95,6 +110,7 @@ public class MainClient extends JFrame {
 	
 	public MainClient(String name)
 	{
+		setIconImage(Toolkit.getDefaultToolkit().getImage(MainClient.class.getResource("/Images/logo.jpg")));
 		setTitle("KPPMessanger");
 		this.nickname = name;
 		createWindow();
@@ -144,7 +160,7 @@ public class MainClient extends JFrame {
 		{
 			public void actionPerformed(ActionEvent a) 
 			{
-				writer.println(nickname+": I have logged out."); // Отправляем сообщение серверу
+				writer.println(nickname + ": I have logged out."); // Отправляем сообщение серверу
 				writer.println("keySecretKPPMessanger11");
 				writer.flush(); // Перекрываем поток, чтобы сообщение отправилось корректно
 				closing = true;
@@ -178,7 +194,7 @@ public class MainClient extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		GridBagLayout gbl_contentPane = new GridBagLayout();
-		gbl_contentPane.columnWidths = new int[]{0, 450, 0, 140, 10};
+		gbl_contentPane.columnWidths = new int[]{0, 450, 0, 150, 0};
 		gbl_contentPane.rowHeights = new int[]{15, 245, 0, 20, 200};
 		gbl_contentPane.columnWeights = new double[]{1.0, 1.0, 1.0, 0.0, 1.0};
 		gbl_contentPane.rowWeights = new double[]{1.0, 1.0, 0.0, 0.0, 0.0};
@@ -208,7 +224,7 @@ public class MainClient extends JFrame {
         GridBagConstraints gbc_list = new GridBagConstraints();
         gbc_list.gridwidth = 2;
         gbc_list.gridheight = 4;
-        gbc_list.insets = new Insets(5, 0, 5, 5);
+        gbc_list.insets = new Insets(5, 0, 5, 0);
         gbc_list.fill = GridBagConstraints.BOTH;
         gbc_list.gridx = 3;
         gbc_list.gridy = 0;
@@ -264,6 +280,22 @@ public class MainClient extends JFrame {
 		serverObtaining.start();
 		
 		contentPane.getRootPane().setDefaultButton(btnSend);
+		
+		btnPrivate = new JButton("Private message");
+		btnPrivate.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				// THIS IS PRIVATE MESSAGES
+			}
+		});
+		GridBagConstraints gbc_btnPrivate = new GridBagConstraints();
+		gbc_btnPrivate.gridwidth = 2;
+		gbc_btnPrivate.anchor = GridBagConstraints.NORTH;
+		gbc_btnPrivate.insets = new Insets(0, 0, 0, 0);
+		gbc_btnPrivate.gridx = 3;
+		gbc_btnPrivate.gridy = 4;
+		contentPane.add(btnPrivate, gbc_btnPrivate);
 		setLocationRelativeTo(null);
 		setVisible(true);
 		//setLocationByPlatform(true);
@@ -302,29 +334,19 @@ public class MainClient extends JFrame {
 						if(message.startsWith("forlist"))
 						{
 							String nick = message.substring(7);
-							
-							if(list.size() == 0) 
-							{
-								list.add(nick);
-								toList(nick);
-							}
-							else
-							{
-								for(int i=0; i<list.size(); i++)
-								{
-									if(!list.get(i).equals(nick)) 
-									{
-										toList(nick);
-										break;
-									}
-								}
-								
-								
-							}
+							toList(nick);
 						}
 						else
 						{
-						txtHistory.append(message + '\n');
+							if(message.startsWith("fromlist"))
+							{
+								String nick = message.substring(8);
+								fromList(nick);
+							}
+							else
+							{
+									txtHistory.append(message + '\n');
+							}
 						}
 					
 				}

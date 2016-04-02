@@ -23,14 +23,15 @@ import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.EmptyBorder;
+import java.awt.Toolkit;
 
 
 public class LoginScreen extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	private JTextField txtLogin;
-	private JPasswordField txtPassword;
+	private static JTextField txtLogin;
+	private static JPasswordField txtPassword;
 	private static boolean checker = false;
 
 	private static Connection c;
@@ -52,6 +53,10 @@ private static void setDB()
 	} 
 	catch (SQLException e) 
 	{
+		txtLogin.setText("");
+		txtPassword.setText("");
+		txtPassword.requestFocus();
+		new Error_db();
 		System.out.println("Error 37! Magic problems with dedication users message(SQL). I am in server!");
 		e.printStackTrace();
 	}
@@ -65,6 +70,7 @@ private static void setDB()
 	
 LoginScreen()
 {
+	setIconImage(Toolkit.getDefaultToolkit().getImage(LoginScreen.class.getResource("/Images/logo.jpg")));
 		initGUI();	
 }
 

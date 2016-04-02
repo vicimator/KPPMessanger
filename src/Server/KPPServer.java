@@ -12,6 +12,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
+import Client.Error_db;
+import Client.Error_login;
+
 public class KPPServer
 {
 	public static int portID = 4301;
@@ -89,7 +92,7 @@ private static void setDB()
 			} 
 			catch (IOException e) 
 			{
-				System.out.println("Error 82! Magic problems with dedication users message(IO). I am in server!");
+				System.out.println("Error 95! Magic problems with dedication users message(IO). I am in server!");
 			}
 		}
 	}
@@ -100,6 +103,8 @@ private static void setDB()
 		String login = msg.substring(0, cut-2);
 		String text = msg.substring(cut);
 		String hello = login + ": I have connected!";
+		String exit = login + ": I have disconnected!";
+		String logout = login + ": I have logged out.";
 		//save(login,msg);
 		
 		java.util.Iterator<PrintWriter> iter = streams.iterator();
@@ -118,7 +123,23 @@ private static void setDB()
 						writer.println("forlist" + list.get( i ));
 						writer.flush();
 					}
+	
 				}
+				
+				if(msg.equals(exit) || msg.equals(logout))
+				{
+					for(int i=0; i<list.size()-1; i++)
+					{
+						if(list.get(i).equals(login))
+						{
+							writer.println("fromlist" + list.get( i ));
+							writer.flush();
+						}
+					}
+					list.remove(login);
+					list.trimToSize();
+				}
+				
 				
 				if(!text.equals(""))
 				{

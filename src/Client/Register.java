@@ -16,6 +16,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
+import java.awt.Toolkit;
 
 public class Register extends JFrame {
 
@@ -56,6 +57,7 @@ public class Register extends JFrame {
 	
 	Register() 
 	{
+		setIconImage(Toolkit.getDefaultToolkit().getImage(Register.class.getResource("/Images/logo.jpg")));
 		setTitle("Sign up");
 		initUI();
 	}

@@ -19,6 +19,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JPasswordField;
+import java.awt.Toolkit;
 
 public class Change_account extends JFrame {
 
@@ -58,6 +59,7 @@ public class Change_account extends JFrame {
 	
 	Change_account() 
 	{
+		setIconImage(Toolkit.getDefaultToolkit().getImage(Change_account.class.getResource("/Images/logo.jpg")));
 		setTitle("Log in");
 		initUI();
 	}
