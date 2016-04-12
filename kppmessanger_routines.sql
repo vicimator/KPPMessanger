@@ -16,31 +16,8 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `logins`
+-- Dumping routines for database 'kppmessanger'
 --
-
-DROP TABLE IF EXISTS `logins`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `logins` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `nick` varchar(30) DEFAULT NULL,
-  `pass` tinytext,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `id_UNIQUE` (`id`),
-  UNIQUE KEY `nick_UNIQUE` (`nick`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `logins`
---
-
-LOCK TABLES `logins` WRITE;
-/*!40000 ALTER TABLE `logins` DISABLE KEYS */;
-INSERT INTO `logins` VALUES (1,'admin','admin1'),(2,'Snoopey','79914003'),(3,'Test','12345'),(4,'Test2','123'),(5,'Test3','123456'),(6,'VeryVeryLongNicknameForCheck','111');
-/*!40000 ALTER TABLE `logins` ENABLE KEYS */;
-UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -51,4 +28,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-04-12 16:20:14
+-- Dump completed on 2016-04-12 16:20:15
