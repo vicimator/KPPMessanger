@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -15,8 +16,9 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.List;
 
-import javax.swing.DefaultListModel;
+import javax.swing.AbstractListModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -32,7 +34,6 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.EmptyBorder;
-import java.awt.Toolkit;
 
 public class MainClient extends JFrame {
 	
@@ -55,8 +56,8 @@ public class MainClient extends JFrame {
 	private JMenuItem mntmAbout;
 	private static boolean closing = false;
 	private static JList usersList;
-	final static DefaultListModel listModel = new DefaultListModel();
-	private static ArrayList<String> list = new ArrayList<String>();
+	//final static DefaultListModel listModel = new DefaultListModel();
+	private static  List<String> data = new ArrayList<String>();;
 	private static boolean listCheck = false;
 	private JButton btnPrivate;
 	
@@ -64,15 +65,12 @@ public class MainClient extends JFrame {
 	{
 		try
 		{
-			for(int i=0; i<listModel.size(); i++)
+			for(int i=0; i<data.size(); i++)
 			{
-				if(listModel.getElementAt(i).toString().equals(nick)) throw new Exception("Dat nick is already in use!");
+				if(data.get(i).toString().equals(nick)) throw new Exception("Dat nick is already in use!");
 			}
-	
-	        listModel.addElement(nick);
-	        int index = listModel.size() - 1;
-	        usersList.setSelectedIndex(index);
-	        usersList.ensureIndexIsVisible(index);
+			data.add(nick);
+	        updateJList();
 		}
 		catch(Exception e)
 		{
@@ -82,12 +80,12 @@ public class MainClient extends JFrame {
 	
 	public static void fromList(String nick)
 	{
-		for(int i=0; i<listModel.size(); i++)
+		for(int i=0; i<data.size(); i++)
 		{
-			if(listModel.getElementAt(i).toString().equals(nick)) 
+			if(data.get(i).toString().equals(nick)) 
 				{
-					listModel.removeElementAt(i);
-					break;
+					data.remove(i);
+					updateJList();
 				}
 		}
 		
@@ -189,6 +187,13 @@ public class MainClient extends JFrame {
 		menuBar.add(mnHelp);
 		
 		mntmAbout = new JMenuItem("About");
+		mntmAbout.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent e) 
+			{
+				new About();
+			}
+		});
 		mnHelp.add(mntmAbout);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -220,7 +225,7 @@ public class MainClient extends JFrame {
         scrolltxt.setViewportView(txtHistory);
 		contentPane.add(scrolltxt, gbc_txtHistory);
 		
-        usersList = new JList(listModel);
+        usersList = new JList(new myListModel());
         GridBagConstraints gbc_list = new GridBagConstraints();
         gbc_list.gridwidth = 2;
         gbc_list.gridheight = 4;
@@ -376,5 +381,25 @@ public class MainClient extends JFrame {
 		}
 		
 	}
+	
+	 private static void updateJList() 
+	 {
+	        ((myListModel) usersList.getModel()).update();
+	    }
+	
+	private class myListModel extends AbstractListModel<String> {
+		 
+        public void update() {
+            fireContentsChanged(this, data.size()-1, 0);
+        }
+ 
+        public int getSize() {
+            return data.size();
+        }
+ 
+        public String getElementAt(int index) {
+            return data.get(index);
+        }
+    }
 
 }

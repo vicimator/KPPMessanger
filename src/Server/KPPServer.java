@@ -126,9 +126,23 @@ private static void setDB()
 	
 				}
 				
-				if(msg.equals(exit) || msg.equals(logout))
+				if(msg.equals(exit))
 				{
-					for(int i=0; i<list.size()-1; i++)
+					for(int i=0; i<list.size(); i++)
+					{
+						if(list.get(i).equals(login))
+						{
+							writer.println("fromlist" + list.get( i ));
+							writer.flush();
+						}
+					}
+					list.remove(login);
+					list.trimToSize();
+				}
+				
+				if(msg.equals(logout))
+				{
+					for(int i=0; i<list.size(); i++)
 					{
 						if(list.get(i).equals(login))
 						{
