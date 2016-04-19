@@ -24,6 +24,7 @@ public class KPPServer
 	private static Statement st;
 	private static PrintWriter writer;
 	private static ArrayList<String> list = new ArrayList<String>();
+	private static int number = 0;
 	
 //Коннектиться к БД 
 private static void setDB() 
@@ -85,8 +86,16 @@ private static void setDB()
 						}
 						else
 						{
-						System.out.println(message);
-						spreadInChat(message);
+							if(message.startsWith("spEcialForUser11"))
+							{
+								System.out.println("Private: " + message);
+								spreadPrivate(message);
+							}
+							else
+							{
+							System.out.println(message);
+							spreadInChat(message);
+							}
 						}
 					}
 			} 
@@ -157,10 +166,11 @@ private static void setDB()
 				
 				if(!text.equals(""))
 				{
-				writer = iter.next();
-				//writer.println("forlist" + list.get());
-				writer.println(msg);
-				writer.flush();
+
+					writer = iter.next();
+					//writer.println("forlist" + list.get());
+					writer.println(msg);
+					writer.flush();
 				}
 				else
 				{
@@ -170,9 +180,44 @@ private static void setDB()
 			}
 			catch(Exception e)
 			{
-				System.out.println("Error 108! Iterator is dumb. Correct it! I am in server!");
+				System.out.println("Error 182! Iterator is dumb. Correct it! I am in server!");
 			}
 		}
+	}
+	
+	private static void spreadPrivate(String msg)
+	{
+		String log = msg.substring(16);
+		int cut = log.indexOf('\\') + 1 ;
+		String sender = log.substring(0, cut-1);
+		log = log.substring(cut);
+		cut = log.indexOf(' ') + 1 ;
+		String reciever = log.substring(0, cut-2);
+		log = log.substring(cut);
+		
+		java.util.Iterator<PrintWriter> iter = streams.iterator();
+		
+		while(iter.hasNext())
+		{
+			try
+			{
+					if(list.get(number).equals(reciever))
+					{
+						writer = iter.next();
+						number++;
+						writer.println("prIvaTeMeSsSaGGGe123" + sender + ": " + log);
+						writer.flush();
+					}
+				writer = iter.next();
+				number++;
+				writer.flush();
+			}
+			catch(Exception ex)
+			{
+				System.out.println("Error 208! Iterator is dumb. Correct it! I am in server!-privates");
+			}
+		}
+		number = 0;
 	}
 	
 	//Сохраняет переписку в БД

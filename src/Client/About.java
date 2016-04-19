@@ -28,11 +28,11 @@ public class About extends JFrame {
 		
 		JLabel image = new JLabel();
 		image.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/kppLogo.jpg")));
-		image.setBounds(60, 40, 180, 82);
+		image.setBounds(60, 30, 180, 82);
 		contentPane.add(image);
 		
-		JLabel desc = new JLabel("<html>\r\nKPPMessanger it's <i>\"easy-to-use\"</i> manager, which includes all common stuff to comunicate. <br /> <br />\r\nThis application was made by <strong>Vindict Team</strong>: <br /> <br />\r\n<strong>Main developer</strong>: Vladyslav Stopin <br />\r\n<strong>Assistance</strong>: Bogdan Gorbatenko <br /> <br />\r\n<center><i><small>Current version: 0.4</small></i></center>\r\n</html>");
-		desc.setBounds(27, 145, 245, 125);
+		JLabel desc = new JLabel("<html>\r\nKPPMessanger it's <i>\"easy-to-use\"</i> manager, which includes all common stuff to comunicate. <br /> <br />\r\nThis application was made by <strong>Vindict Team</strong>: <br /> <br />\r\n<strong>Main developer</strong>: Vladyslav Stopin <br />\r\n<strong>Assistance</strong>: Bogdan Gorbatenko <br /> <br />\r\n<strong>GitHub</strong>: KPPMessanger <br /> <br />\r\n<center><i><small>Current version: 0.5</small></i></center>\r\n</html>");
+		desc.setBounds(27, 135, 245, 156);
 		contentPane.add(desc);
 	}
 }

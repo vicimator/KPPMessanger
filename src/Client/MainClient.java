@@ -1,13 +1,22 @@
 package Client;
 
+import java.awt.BasicStroke;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
@@ -18,7 +27,9 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.AbstractButton;
 import javax.swing.AbstractListModel;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -28,12 +39,16 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.JToggleButton;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.border.BevelBorder;
 import javax.swing.border.EmptyBorder;
+import javax.swing.plaf.basic.BasicButtonUI;
 
 public class MainClient extends JFrame {
 	
@@ -57,9 +72,12 @@ public class MainClient extends JFrame {
 	private static boolean closing = false;
 	private static JList usersList;
 	//final static DefaultListModel listModel = new DefaultListModel();
-	private static  List<String> data = new ArrayList<String>();;
+	private static  List<String> data = new ArrayList<String>();
 	private static boolean listCheck = false;
 	private JButton btnPrivate;
+	private static JTabbedPane privatePane;
+	private static List<String> privates = new ArrayList<String>();
+	private static JTextArea txtArea;
 	
 	public static void toList(String nick)
 	{
@@ -145,7 +163,7 @@ public class MainClient extends JFrame {
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(600, 480);
-		setMinimumSize(new Dimension(500, 400));
+		setMinimumSize(new Dimension(585, 450));
 		
 		menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
@@ -200,9 +218,9 @@ public class MainClient extends JFrame {
 		setContentPane(contentPane);
 		GridBagLayout gbl_contentPane = new GridBagLayout();
 		gbl_contentPane.columnWidths = new int[]{0, 450, 0, 150, 0};
-		gbl_contentPane.rowHeights = new int[]{15, 245, 0, 20, 200};
+		gbl_contentPane.rowHeights = new int[]{15, 245, 0, 20, 30, 0, 160, 20};
 		gbl_contentPane.columnWeights = new double[]{1.0, 1.0, 1.0, 0.0, 1.0};
-		gbl_contentPane.rowWeights = new double[]{1.0, 1.0, 0.0, 0.0, 0.0};
+		gbl_contentPane.rowWeights = new double[]{1.0, 1.0, 0.0, 0.0, 0.0, 1.0};
 		contentPane.setLayout(gbl_contentPane);
 		
 		txtHistory.setFont(new Font("MS Reference Sans Serif", Font.PLAIN, 13));
@@ -210,14 +228,12 @@ public class MainClient extends JFrame {
 		txtHistory.setWrapStyleWord(true);
 		txtHistory.setEditable(false);
 		GridBagConstraints gbc_txtHistory = new GridBagConstraints();
-		gbc_txtHistory.gridheight = 2;
+		gbc_txtHistory.gridheight = 3;
 		gbc_txtHistory.gridwidth = 3;
 		gbc_txtHistory.fill = GridBagConstraints.BOTH;
 		gbc_txtHistory.insets = new Insets(5, 0, 5, 5);
 		gbc_txtHistory.gridx = 0;
 		gbc_txtHistory.gridy = 0;
-		txtHistory.setLineWrap(true);
-		txtHistory.setWrapStyleWord(true);
 		JScrollPane scrolltxt = new JScrollPane();
         scrolltxt.setWheelScrollingEnabled(true);
         scrolltxt.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -260,7 +276,7 @@ public class MainClient extends JFrame {
 		GridBagConstraints gbc_btnSend = new GridBagConstraints();
 		gbc_btnSend.gridwidth = 2;
 		gbc_btnSend.anchor = GridBagConstraints.NORTHWEST;
-		gbc_btnSend.insets = new Insets(0, 0, 0, 5);
+		gbc_btnSend.insets = new Insets(0, 0, 5, 5);
 		gbc_btnSend.gridx = 0;
 		gbc_btnSend.gridy = 4;
 		gbc_btnSend.ipadx = 30;
@@ -272,12 +288,14 @@ public class MainClient extends JFrame {
 		GridBagConstraints gbc_logged = new GridBagConstraints();
 		gbc_logged.anchor = GridBagConstraints.NORTHEAST;
 		gbc_logged.gridwidth = 3;
-		gbc_logged.insets = new Insets(0, 0, 0, 5);
+		gbc_logged.insets = new Insets(0, 0, 5, 5);
 		gbc_logged.gridx = 0;
 		gbc_logged.gridy = 4;
 		gbc_logged.ipadx = 100;
 		gbc_logged.ipady = 7;
 		contentPane.add(logged, gbc_logged);
+		
+		
 		
 		virtualNet();
 		
@@ -286,21 +304,67 @@ public class MainClient extends JFrame {
 		
 		contentPane.getRootPane().setDefaultButton(btnSend);
 		
-		btnPrivate = new JButton("Private message");
-		btnPrivate.addActionListener(new ActionListener() 
-		{
-			public void actionPerformed(ActionEvent arg0) 
-			{
-				// THIS IS PRIVATE MESSAGES
-			}
-		});
+		btnPrivate = new JButton("Private mode");
+
 		GridBagConstraints gbc_btnPrivate = new GridBagConstraints();
 		gbc_btnPrivate.gridwidth = 2;
 		gbc_btnPrivate.anchor = GridBagConstraints.NORTH;
-		gbc_btnPrivate.insets = new Insets(0, 0, 0, 0);
+		gbc_btnPrivate.insets = new Insets(0, 0, 5, 0);
 		gbc_btnPrivate.gridx = 3;
 		gbc_btnPrivate.gridy = 4;
 		contentPane.add(btnPrivate, gbc_btnPrivate);
+		
+		privatePane = new JTabbedPane(JTabbedPane.TOP);
+		privatePane.setFont(new Font("MS Reference Sans Serif", Font.PLAIN, 13));
+		privatePane.setVisible(false);
+		GridBagConstraints gbc_privatePane = new GridBagConstraints();
+		gbc_privatePane.gridwidth = 3;
+		gbc_privatePane.gridheight = 2;
+		gbc_privatePane.insets = new Insets(0, 0, 5, 5);
+		gbc_privatePane.fill = GridBagConstraints.BOTH;
+		gbc_privatePane.gridx = 0;
+		gbc_privatePane.gridy = 5;
+		contentPane.add(privatePane, gbc_privatePane);
+
+		btnPrivate.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent ae) 
+			{
+					try
+					{
+					Object element = usersList.getSelectedValue();
+	                String pName = element.toString();
+		                if(pName.equals(nickname))
+		                {
+		                	new Info_private();
+		                }
+		                else
+		                {
+		                	boolean iChecker = true;
+		                	for(int i=0; i<privates.size();i++)
+		                	{
+		                		if(privates.get(i).equals(pName))
+		                		{
+		                			new Info_private_add();
+		                			iChecker = false;
+		                			break;
+		                		}
+		                	}
+		                	if(iChecker)
+		                	{
+		                	privates.add(pName);
+		                	privatePane.setVisible(true);
+		                	privatePane.addTab(pName, createPane(pName));
+		                	}
+		                }
+					}
+					catch(RuntimeException e)
+					{
+						new Error_private();
+					}
+			}
+		});
+		
 		setLocationRelativeTo(null);
 		setVisible(true);
 		//setLocationByPlatform(true);
@@ -350,7 +414,15 @@ public class MainClient extends JFrame {
 							}
 							else
 							{
+								if(message.startsWith("prIvaTeMeSsSaGGGe123"))
+								{
+									String msgPrivate = message.substring(20);
+									txtArea.append(msgPrivate + '\n');
+								}
+								else
+								{
 									txtHistory.append(message + '\n');
+								}
 							}
 						}
 					
@@ -387,7 +459,8 @@ public class MainClient extends JFrame {
 	        ((myListModel) usersList.getModel()).update();
 	    }
 	
-	private class myListModel extends AbstractListModel<String> {
+	private class myListModel extends AbstractListModel<String> 
+	{
 		 
         public void update() {
             fireContentsChanged(this, data.size()-1, 0);
@@ -401,5 +474,127 @@ public class MainClient extends JFrame {
             return data.get(index);
         }
     }
-
+	
+	  JPanel createPane(String pName) 
+	  {
+		  	JPanel panel = new JPanel();
+			panel.setLayout(new BorderLayout(0, 0));
+			
+			txtArea = new JTextArea();
+			txtArea.setFont(new Font("Monospaced", Font.PLAIN, 13));
+			txtArea.setLineWrap(true);
+			txtArea.setWrapStyleWord(true);
+			JScrollPane scroll = new JScrollPane();
+	        scroll.setWheelScrollingEnabled(true);
+	        scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+	        scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+	        scroll.setViewportView(txtArea);
+			panel.add(scroll, BorderLayout.CENTER);
+			
+			JPanel panel_1 = new JPanel();
+			panel_1.setLayout(new BorderLayout(0, 0));
+			panel_1.setBorder(BorderFactory.createEmptyBorder(5, 0, 0, 0));
+			
+			JTextField txtField = new JTextField();
+			panel_1.add(txtField, BorderLayout.CENTER);
+			txtField.setColumns(10);
+			
+			panel.add(panel_1, BorderLayout.SOUTH);
+			
+			JButton btnNewButton = new JButton("Send");
+			btnNewButton.addActionListener(new ActionListener() 
+			{
+				public void actionPerformed(ActionEvent ae) 
+				{
+					String message;
+					if(txtField.getText() == null){ message = null; }
+					else
+					{
+					message = "spEcialForUser11"+ nickname + "\\" + pName + ": " + txtField.getText(); // Записываем строку, которую нужно отправить
+					writer.println(message); // Отправляем сообщение серверу
+					writer.flush(); // Перекрываем поток, чтобы сообщение отправилось корректно
+					}
+					txtField.setText("");
+					txtField.requestFocus();
+				}
+			});
+			panel_1.add(btnNewButton, BorderLayout.EAST);
+			
+		    return panel;
+	  }
+	  
+	  private class TabButton extends JButton implements ActionListener 
+	  {
+		 int index = privatePane.getSelectedIndex();
+		 
+	        public TabButton() 
+	        {
+	            int size = 17;
+	            setPreferredSize(new Dimension(size, size));
+	            setToolTipText("Close this tab");
+	            //Make the button looks the same for all Laf's
+	            setUI(new BasicButtonUI());
+	            //Make it transparent
+	            setContentAreaFilled(false);
+	            //No need to be focusable
+	            setFocusable(false);
+	            setBorder(BorderFactory.createEtchedBorder());
+	            setBorderPainted(false);
+	            //Making nice rollover effect
+	            //we use the same listener for all buttons
+	            addMouseListener(buttonMouseListener);
+	            setRolloverEnabled(true);
+	            //Close the proper tab by clicking the button
+	            addActionListener(this);
+	        }
+	 
+	        public void actionPerformed(ActionEvent e)
+	        {
+	            if (index != -1) 
+	            {
+	            	privatePane.remove(index);
+	            }
+	        }
+	 
+	        //we don't want to update UI for this button
+	        public void updateUI() {
+	        }
+	 
+	        //paint the cross
+	        protected void paintComponent(Graphics g) {
+	            super.paintComponent(g);
+	            Graphics2D g2 = (Graphics2D) g.create();
+	            //shift the image for pressed buttons
+	            if (getModel().isPressed()) {
+	                g2.translate(1, 1);
+	            }
+	            g2.setStroke(new BasicStroke(2));
+	            g2.setColor(Color.BLACK);
+	            if (getModel().isRollover()) {
+	                g2.setColor(Color.MAGENTA);
+	            }
+	            int delta = 6;
+	            g2.drawLine(delta, delta, getWidth() - delta - 1, getHeight() - delta - 1);
+	            g2.drawLine(getWidth() - delta - 1, delta, delta, getHeight() - delta - 1);
+	            g2.dispose();
+	        }
+	    }
+	 
+	    private final static MouseListener buttonMouseListener = new MouseAdapter() {
+	        public void mouseEntered(MouseEvent e) {
+	            Component component = e.getComponent();
+	            if (component instanceof AbstractButton) {
+	                AbstractButton button = (AbstractButton) component;
+	                button.setBorderPainted(true);
+	            }
+	        }
+	 
+	        public void mouseExited(MouseEvent e) {
+	            Component component = e.getComponent();
+	            if (component instanceof AbstractButton) {
+	                AbstractButton button = (AbstractButton) component;
+	                button.setBorderPainted(false);
+	            }
+	        }
+	    };
 }
