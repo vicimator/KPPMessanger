@@ -1,5 +1,8 @@
 # KPPMessanger
-Java Project, which consist code for KPPMessanger, developed by vicimator. Was created in Eclipse LUNA with help of WindowBuilder. Surrounding is simple, but usability is high! Include next most wonderful <strong>features</strong>:
+<p align="center">
+  <img src="http://i.imgur.com/P62VBEA.jpg" alt="KPPMessanger logotype"/>
+</p>
+<p>Java Project, which consist code for KPPMessanger, developed by vicimator. Was created in Eclipse LUNA with help of WindowBuilder. Surrounding is simple, but usability is high! Include next most wonderful <strong>features</strong>:</p>
 <ul>
     <li>User-friendly interface;</li>
     <li>Built-in registration;</li>
