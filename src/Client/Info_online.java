@@ -1,4 +1,4 @@
-package Client;
+package Client; // Подробно об окне ошибок описано в файле Error_db.java
 
 import java.awt.EventQueue;
 import java.awt.Font;

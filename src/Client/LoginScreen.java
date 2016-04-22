@@ -1,6 +1,6 @@
-package Client;
+package Client; // Работаем в пакете Клиента
 
-import java.awt.Cursor;
+import java.awt.Cursor; // Необходимые библиотечки для работы
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -29,17 +29,17 @@ import java.awt.Toolkit;
 
 public class LoginScreen extends JFrame {
 
-	private static final long serialVersionUID = 1L;
-	private JPanel contentPane;
+	private static final long serialVersionUID = 1L; // Для версий приложения это необходимо (не юзаю)
+	private JPanel contentPane; // Задаем переменные, которые видны во всем файле
 	private static JTextField txtLogin;
 	private static JPasswordField txtPassword;
 	private static boolean checker = false;
 
 	private static Connection c;
 	private static Statement st;
-	final static ImageIcon longIcon = new ImageIcon("icon.png");
+	final static ImageIcon longIcon = new ImageIcon("icon.png"); // устанавливаем иконочку окна
 	// Устанавливает конекшн к БД
-private static void setDB() 
+private static void setDB() // Подробнее о методе коннекта к БД в файле KPPServer.java
 {
 	String url = "jdbc:mysql://localhost:3306/KPPMessanger";
 	String login = "root";
@@ -69,7 +69,7 @@ private static void setDB()
 	
 }
 	
-LoginScreen()
+LoginScreen() // Конструктор сборки окна - это иконка + прорисовка GUI
 {
 	setIconImage(Toolkit.getDefaultToolkit().getImage(LoginScreen.class.getResource("/Images/logo.jpg")));
 		initGUI();	
@@ -78,10 +78,10 @@ LoginScreen()
 private void initGUI()
 {	
 	
-	try 
+	try // Делаем атк ,чтобы окошко отображалось одинаково на всех устройствах и ловим кучу исключенией
 	{
 		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-	}
+	} // Но обычно все окей, исключения будут очень редко и зависит от машины
 	catch (ClassNotFoundException e) 
 	{
 		e.printStackTrace();
@@ -103,15 +103,15 @@ private void initGUI()
 		System.out.println("Error 87! Gwt stacked w/ KPP Intarface(GUI). I'm in loginscreen!");
 	}
 
-	setTitle("KPPMessanger");
-	setResizable(false);
-	setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	setSize(300, 350);
-	contentPane = new JPanel();
+	setTitle("KPPMessanger"); // Задаем название прототипа окна
+	setResizable(false); // В размерах менять его нельзя
+	setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // При нажатии на крестик выход из программы
+	setSize(300, 350); // Задаем статическое окно
+	contentPane = new JPanel(); // Новая главная панель с отступами 5 от краев
 	contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-	setContentPane(contentPane);
-	contentPane.setLayout(null);
-	setLocationRelativeTo(null);
+	setContentPane(contentPane); 
+	contentPane.setLayout(null); // Лэйаут - абсолют, размещение по координатам
+	setLocationRelativeTo(null); // Окно появится по центру экрана
 	
 	txtLogin = new JTextField();
 	txtLogin.setBounds(90, 80, 120, 25); // Login
@@ -131,11 +131,11 @@ private void initGUI()
 	{	
 		public void actionPerformed(ActionEvent a) 
 		{	
-			String nickname = txtLogin.getText();
-			@SuppressWarnings("deprecation")
-			String password = txtPassword.getText();
+			String nickname = txtLogin.getText(); // Получаем строку логина из поля логина
+			@SuppressWarnings("deprecation") // Получаем пароль из сооответствующей строки но через этот метод
+			String password = txtPassword.getText(); // Потому что символы там скрыты
 			
-			check(nickname, password);
+			check(nickname, password); // Проверяем на логин и пароль в бд
 			//login(nickname);
 		}
 	});
@@ -144,43 +144,43 @@ private void initGUI()
 	
 	contentPane.add(lblPassword);
 	contentPane.add(lblLogin);
-	contentPane.add(txtLogin);
+	contentPane.add(txtLogin); // Добавляем элементы на главную панель
 	contentPane.add(loginButton);
 	
-	contentPane.getRootPane().setDefaultButton(loginButton);
+	contentPane.getRootPane().setDefaultButton(loginButton); // Кнопка логина прибинжена на Enter
 	
 	txtPassword = new JPasswordField();
 	txtPassword.setBounds(90, 160, 120, 25);
-	contentPane.add(txtPassword);
+	contentPane.add(txtPassword); 
 	
-	JLabel regLabel = new JLabel();
+	JLabel regLabel = new JLabel(); // Кнопка регистрации в мессенджере
 	regLabel.setText("<html><u>Sign up</u></html>");
 	regLabel.addMouseListener(new MouseAdapter() {
 		
 		@Override
 		public void mouseClicked(MouseEvent ev) 
 		{
-			new Register();
+			new Register(); // При нажатии открыть новое окно регистрации
 		}
 		
 		@Override
 		public void mouseEntered(MouseEvent e) 
 		{
-			regLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			regLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)); // При наведении курсор будет пальчиком
 		}
 	});
 	regLabel.setFont(new Font("Vani", Font.PLAIN, 17));
 	regLabel.setBounds(120, 250, 60, 30);
 	contentPane.add(regLabel);
-	JLabel lblAuthor = new JLabel("Copyright Vindict Team \u00A9 2016");
-	lblAuthor.setBounds(75, 297, 150, 14);
+	JLabel lblAuthor = new JLabel("Copyright Vindict Team \u00A9 2016"); 
+	lblAuthor.setBounds(75, 297, 150, 14);// добавлении надписи копирайта
 	contentPane.add(lblAuthor);
 }
 	
 	//Чекает данные для логина
 private void check(String nickname, String password)
-	{
-		String checker;
+	{ // Подробно про чек логина, пароля и онлайна в файле Change_account.java 
+		String checker; // Точно такой же код и там на проверку
 		int checks = 0;
 		boolean check_log = false;
 		boolean check_pass = false;
@@ -274,19 +274,19 @@ private void check(String nickname, String password)
 
 	private void login(String name) // Working w/ ActionListener on Log in button.
 	{
-			dispose();
-			new MainClient(name);
+			dispose(); // Если все ок, то закрываем этот прототип окна 
+			new MainClient(name); // И открываем главный клиент, передавая туда ник вновь пришедшего юзера
 	}
 	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					LoginScreen frame = new LoginScreen();
-					frame.setVisible(true);
+					LoginScreen frame = new LoginScreen(); // Отрисовка окна 
+					frame.setVisible(true); // И отображение 
 				} catch (Exception e) {
-					e.printStackTrace();
-					System.out.println("Error 75! Problems w/ Loin frame. I'm in LoginScreen!");
+					e.printStackTrace(); //отчет о возможных ошибках
+					System.out.println("Error 289! Problems w/ Loin frame. I'm in LoginScreen!");
 				}
 			}
 		});

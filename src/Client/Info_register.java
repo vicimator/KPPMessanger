@@ -11,12 +11,12 @@ import javax.swing.UIManager;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-public class Error_private extends JFrame 
+public class Info_register extends JFrame 
 {
 	
-	private Icon warnIcon = UIManager.getIcon("OptionPane.warningIcon");
+	private Icon warnIcon = UIManager.getIcon("OptionPane.informationIcon");
 	
-	Error_private() 
+	Info_register() 
 	{
 		initGUI();
 	}
@@ -24,7 +24,7 @@ public class Error_private extends JFrame
 	private void initGUI()
 	{
 		
-		setTitle("Error");
+		setTitle("Information");
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setSize(280, 160);
@@ -34,8 +34,8 @@ public class Error_private extends JFrame
 		
 		JLabel msgLabel = new JLabel();
 		msgLabel.setFont(new Font("Book Antiqua", Font.PLAIN, 13));
-		msgLabel.setText("<html> Error occurred because of chosen nickname. System can't recognize it, please, return and choose again.</html>");
-		msgLabel.setBounds(47, 11, 217, 85);
+		msgLabel.setText("<html><center>You had been successfully registered. To enter in your account - input login and password.</center></html>");
+		msgLabel.setBounds(50, 11, 217, 85);
 		getContentPane().add(msgLabel);
 		
 		JButton btnAgree = new JButton("Got it");
@@ -47,11 +47,11 @@ public class Error_private extends JFrame
 				dispose();
 			}
 		});
-		btnAgree.setBounds(160, 87, 104, 34);
+		btnAgree.setBounds(90, 87, 100, 35);
 		getContentPane().add(btnAgree);
 		
 		JLabel warnLabel = new JLabel();
-		warnLabel.setBounds(10, 21, 32, 44);
+		warnLabel.setBounds(10, 30, 32, 44);
 		warnLabel.setIcon(warnIcon);
 		getContentPane().add(warnLabel);
 
@@ -65,7 +65,7 @@ public static void main(String[] args)
 			{
 				try 
 				{
-					Error_private frame = new Error_private();
+					Info_register frame = new Info_register();
 					frame.setVisible(true);
 				} 
 				catch (Exception e) 

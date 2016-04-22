@@ -1,6 +1,6 @@
-package Client;
+package Client; // Работаем в пакете клиента
 
-import java.awt.EventQueue;
+import java.awt.EventQueue; // Необходимые библиотечки
 import java.awt.Font;
 
 import javax.swing.Icon;
@@ -14,45 +14,45 @@ import java.awt.event.ActionEvent;
 public class Error_db extends JFrame 
 {
 	
-	private Icon warnIcon = UIManager.getIcon("OptionPane.errorIcon");
+	private Icon warnIcon = UIManager.getIcon("OptionPane.errorIcon"); // Добавляем иконку приложения
 	
 	public Error_db() 
 	{
-		initGUI();
+		initGUI(); // Конструктор содержит лишь метод отрисовки окна
 	}
 	
 	private void initGUI()
 	{
 		
-		setTitle("Error");
-		setResizable(false);
-		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setSize(280, 160);
-		setLocationRelativeTo(null);
-		setVisible(true);
-		getContentPane().setLayout(null);
+		setTitle("Error"); // Заголовок ошибки
+		setResizable(false); // Изменять размер окна запрещено
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // При закрытии закрыть прототип только этого окна
+		setSize(280, 160); // Фиксированный размер окна
+		setLocationRelativeTo(null); // Поместить по центру экрана
+		setVisible(true); // Сделать видимым
+		getContentPane().setLayout(null); // Лэйаут делаем типа Абсолют (задавать придется координаты объектов при добавлении)
 		
 		JLabel msgLabel = new JLabel();
 		msgLabel.setFont(new Font("Book Antiqua", Font.PLAIN, 13));
 		msgLabel.setText("<html>Problem with database connection.</html>");
-		msgLabel.setBounds(61, 37, 203, 39);
+		msgLabel.setBounds(61, 37, 203, 39); // Описание ошибки + ее добавление на панель
 		getContentPane().add(msgLabel);
 		
-		JButton btnAgree = new JButton("Got it");
+		JButton btnAgree = new JButton("Got it"); // Кнопка, что все окей, я понял в чем беда
 		btnAgree.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		btnAgree.addActionListener(new ActionListener() {
 			
 			public void actionPerformed(ActionEvent a) 
 			{
-				dispose();
+				dispose(); // При нажатии на нее окно закрывается
 			}
 		});
 		btnAgree.setBounds(160, 87, 104, 34);
-		getContentPane().add(btnAgree);
+		getContentPane().add(btnAgree); // Биндим Enter на эту кнопку
 		
 		JLabel warnLabel = new JLabel();
 		warnLabel.setBounds(10, 32, 32, 44);
-		warnLabel.setIcon(warnIcon);
+		warnLabel.setIcon(warnIcon); // Добавляем иконочку для красоты 
 		getContentPane().add(warnLabel);
 
 	}
@@ -61,7 +61,7 @@ public static void main(String[] args)
 {
 		EventQueue.invokeLater(new Runnable(){
 			
-			public void run() 
+			public void run()  // Отрисовка окна + делаем ег овидимым
 			{
 				try 
 				{
@@ -70,7 +70,7 @@ public static void main(String[] args)
 				} 
 				catch (Exception e) 
 				{
-					e.printStackTrace();
+					e.printStackTrace(); // всевозможные отчеты о возможных ошибках
 				}
 			}
 		});

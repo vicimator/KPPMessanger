@@ -1,4 +1,4 @@
-package Client;
+package Client; // Ќ≈ »—ѕќЋ№«”≈“—я — ¬≈–—»» 0.5 (не рабочее, но возможно в использовании в релизе)
 
 import java.awt.Dimension;
 import java.awt.Font;
