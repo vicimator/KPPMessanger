@@ -15,6 +15,13 @@
     <li>Possibility to change accounts;</>
     <li>And even more... </li>
 </ul>    
-Try NEW pre-release version KPPMessanger today! (starts from v0.63)
+Try NEW pre-release version KPPMessanger today! <small><i>(starts from v0.63)</i></small>
+
+<strong>Statistics</strong> of the project:
+<ul>
+  <li>Packages: 3</li>
+  <li>Files: 18</li>
+  <li>Lines of code in summary: 2706</li>
+</ul>
 
 <i>Created by vicimator, Vindict team © 2016</i>
