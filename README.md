@@ -15,6 +15,6 @@
     <li>Possibility to change accounts;</>
     <li>And even more... </li>
 </ul>    
-Try KPPMessanger today!
+Try NEW pre-release version KPPMessanger today! (starts from v0.63)
 
 <i>Created by vicimator, Vindict team © 2016</i>
