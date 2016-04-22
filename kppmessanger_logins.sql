@@ -26,10 +26,11 @@ CREATE TABLE `logins` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `nick` varchar(30) DEFAULT NULL,
   `pass` tinytext,
+  `isOnline` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
   UNIQUE KEY `nick_UNIQUE` (`nick`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -38,7 +39,7 @@ CREATE TABLE `logins` (
 
 LOCK TABLES `logins` WRITE;
 /*!40000 ALTER TABLE `logins` DISABLE KEYS */;
-INSERT INTO `logins` VALUES (1,'admin','admin1'),(2,'Snoopey','79914003'),(3,'Test','12345'),(4,'Test2','123'),(5,'Test3','123456'),(6,'VeryVeryLongNicknameForCheck','111');
+INSERT INTO `logins` VALUES (1,'admin','admin1',0),(2,'Snoopey','79914003',0),(3,'Test','12345',0),(4,'Test2','123',0),(5,'Test3','123456',0),(6,'VeryVeryLongNicknameForCheck','111',0);
 /*!40000 ALTER TABLE `logins` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -51,4 +52,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-04-12 16:20:14
+-- Dump completed on 2016-04-22 23:32:21

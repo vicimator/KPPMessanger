@@ -205,16 +205,29 @@ private static void setDB()
 					{
 						writer = iter.next();
 						number++;
-						writer.println("prIvaTeMeSsSaGGGe123" + sender + ": " + log);
+						writer.println("prIvaTeMeSsSaGGGe123"+ reciever + sender + ": " + log);
 						writer.flush();
 					}
-				writer = iter.next();
-				number++;
-				writer.flush();
+					else
+					{
+						if(list.get(number).equals(sender))
+						{
+							writer = iter.next();
+							number++;
+							writer.println("spEcIalFORRecieveRR5" + sender + ": " + log);
+							writer.flush();
+						}
+						else
+						{
+							writer = iter.next();
+							number++;
+							writer.flush();
+						}
+					}
 			}
 			catch(Exception ex)
 			{
-				System.out.println("Error 208! Iterator is dumb. Correct it! I am in server!-privates");
+				System.out.println("Error 217! Iterator is dumb. Correct it! I am in server!-privates");
 			}
 		}
 		number = 0;

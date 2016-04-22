@@ -1,39 +1,29 @@
 package Client;
 
-import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.EventQueue;
-import java.awt.Toolkit;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.border.EmptyBorder;
-
-import java.awt.GridBagLayout;
-
-import javax.swing.JTextArea;
-
-import java.awt.GridBagConstraints;
-
-import javax.swing.JTextField;
-
-import java.awt.Insets;
-
-import javax.swing.JButton;
-
 import java.awt.Font;
-
-import javax.swing.JLabel;
-
-import java.awt.event.ActionListener;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.ScrollPaneConstants;
 
 public class Private extends JFrame 
 {
@@ -58,7 +48,7 @@ public class Private extends JFrame
 		}
 		catch (IOException e)
 		{
-			System.out.println("Error 61! Connected w/ virtual Web Connection. I am in Client.");
+			System.out.println("Error 51! Connected w/ virtual Web Connection. I am in Client.");
 		}	
 	}
 		
@@ -75,6 +65,9 @@ public class Private extends JFrame
 		setVisible(true);
 		
 		virtualNet();
+		
+		Thread serverOb = new Thread(new Obdt());
+		serverOb.start();
 		
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{0, 300, 130, 20};
@@ -120,7 +113,7 @@ public class Private extends JFrame
 				if(txtMsg.getText() == null){ message = null; }
 				else
 				{
-				message = "spEcialForUser11"+ reciever + sender + ": " + txtMsg.getText(); // Записываем строку, которую нужно отправить
+				message = "spEcialForUser11"+ sender + "\\" + reciever + ": " + txtMsg.getText(); // Записываем строку, которую нужно отправить
 				writer.println(message); // Отправляем сообщение серверу
 				writer.flush(); // Перекрываем поток, чтобы сообщение отправилось корректно
 				}
@@ -148,6 +141,25 @@ public class Private extends JFrame
 		gbc_login.gridx = 0;
 		gbc_login.gridy = 3;
 		getContentPane().add(login, gbc_login);
+		
+		addWindowListener(new WindowAdapter()
+		{
+			public void windowClosing(WindowEvent e)
+			{
+
+				writer.flush(); // close it for God
+				writer.close();
+				try 
+				{
+					reader.close();
+				} catch (IOException e1) 
+				{
+					System.out.println("Error 157! I'm in client(private). Reader closed incorrect!");
+					e1.printStackTrace();
+				}
+				serverOb.interrupt();
+			}
+		});
 	}
 	
 	private static class Obdt implements Runnable
@@ -160,12 +172,11 @@ public class Private extends JFrame
 			{
 				while( (message=reader.readLine()) != null) // Пока сообщение есть, он добавляет его в конец и Enter
 				{
-						if(message.startsWith("spEcialForUser11"+sender))
-						{
-							int forNick = sender.length();
-							String appends = message.substring(forNick+16);
-							txtHistory.append(appends + '\n');
-						}
+					if(message.startsWith("prIvaTeMeSsSaGGGe123"))
+					{
+						String msgPrivate = message.substring(20);
+						txtHistory.append(msgPrivate + '\n');
+					}
 				}
 			}
 			catch(Exception e)

@@ -24,6 +24,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,16 +46,15 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.JToggleButton;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-import javax.swing.border.BevelBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.basic.BasicButtonUI;
 
 public class MainClient extends JFrame {
 	
+	private static Thread serverObtaining;
 	private static final long serialVersionUID = 1L;
 	public static int portID = 4301;
 	private static String clientIP = "127.0.0.1"; // 31.170.160.85
@@ -78,6 +81,8 @@ public class MainClient extends JFrame {
 	private static JTabbedPane privatePane;
 	private static List<String> privates = new ArrayList<String>();
 	private static JTextArea txtArea;
+	private static Connection c;
+	private static Statement st;
 	
 	public static void toList(String nick)
 	{
@@ -122,6 +127,33 @@ public class MainClient extends JFrame {
 		{
 			System.out.println("Error 33! Connected w/ virtual Web Connection. I am in Client.");
 		}	
+	}
+	
+	private static void setDB() 
+	{
+		String url = "jdbc:mysql://localhost:3306/KPPMessanger";
+		String login = "root";
+		String pass = "root";
+		
+		
+		try 
+		{
+			Class.forName("com.mysql.jdbc.Driver");
+			c=DriverManager.getConnection(url, login, pass);
+			st = c.createStatement();
+		} 
+		catch (SQLException e) 
+		{
+			new Error_db();
+			System.out.println("Error 148! Magic problems with dedication users message(SQL). I am in client!");
+			e.printStackTrace();
+		}
+		catch (ClassNotFoundException e) 
+		{
+			System.out.println("Error 42! Magic problems with dedication users message(classNotFound). I am in server!");
+			e.printStackTrace();
+		}
+		
 	}
 	
 	public MainClient(String name)
@@ -171,19 +203,45 @@ public class MainClient extends JFrame {
 		mnFile = new JMenu("File");
 		menuBar.add(mnFile);
 		
+		setDB();
+		
 		mntmLogOut = new JMenuItem("Chenge account");
 		mntmLogOut.addActionListener(new ActionListener() // LOG OUT
 		{
 			public void actionPerformed(ActionEvent a) 
 			{
+				txtHistory.setText("");
+				txtMessage.setText("");
 				writer.println(nickname + ": I have logged out."); // Отправляем сообщение серверу
 				writer.println("keySecretKPPMessanger11");
 				writer.flush(); // Перекрываем поток, чтобы сообщение отправилось корректно
+				writer.close();
+				try
+				{
+					reader.close();
+				} 
+				catch (IOException e) 
+				{
+					System.out.println("Error 190! I'm in client. Reader closed incottrect.");
+					e.printStackTrace();
+				}
 				closing = true;
+				serverObtaining.interrupt();
+				try 
+				{
+					String SQL = "UPDATE `logins` SET isOnline=0 WHERE nick=\""+nickname+"\"";
+					Statement s = c.createStatement();
+					s.executeUpdate(SQL);
+					c.close();
+				} 
+				catch (SQLException e) 
+				{
+					System.out.println("Error #237! Problems w/ SQL. I'm in main client.");
+					e.printStackTrace();
+				}
+
 				dispose();
-				txtHistory.setText("");
-				txtMessage.setText("");
-				txtMessage.requestFocus();
+				//txtMessage.requestFocus();
 				new Change_account();
 			}
 		});
@@ -196,6 +254,29 @@ public class MainClient extends JFrame {
 				writer.println(nickname + ": I have disconnected!");
 				writer.println("keySecretKPPMessanger11"); // secret key to delete threads
 				writer.flush(); // close it for God
+				writer.close();
+				try 
+				{
+					reader.close();
+				} 
+				catch (IOException e1) 
+				{
+					System.out.println("Error 205! I'm in client. Reader didn't close right way.");
+					e1.printStackTrace();
+				}
+				serverObtaining.interrupt();
+				try 
+				{
+					String SQL = "UPDATE `logins` SET isOnline=0 WHERE nick=\""+nickname+"\"";
+					Statement s = c.createStatement();
+					s.executeUpdate(SQL);
+					c.close();
+				} 
+				catch (SQLException ex) 
+				{
+					System.out.println("Error #274! Problems w/ SQL. I'm in main client.");
+					ex.printStackTrace();
+				}
 				System.exit(0);
 			}
 		});
@@ -299,7 +380,7 @@ public class MainClient extends JFrame {
 		
 		virtualNet();
 		
-		Thread serverObtaining = new Thread(new Obdt());
+		serverObtaining = new Thread(new Obdt());
 		serverObtaining.start();
 		
 		contentPane.getRootPane().setDefaultButton(btnSend);
@@ -355,12 +436,19 @@ public class MainClient extends JFrame {
 		                	privates.add(pName);
 		                	privatePane.setVisible(true);
 		                	privatePane.addTab(pName, createPane(pName));
+		                	//new Private(pName, nickname);
 		                	}
 		                }
 					}
 					catch(RuntimeException e)
 					{
+						Object element = usersList.getSelectedValue();
+		                String pName = element.toString();
 						new Error_private();
+						for( int i=0; i<privates.size(); i++)
+						{
+							if(privates.get(i).equals(pName)) privates.remove(i);
+						}
 					}
 			}
 		});
@@ -377,6 +465,28 @@ public class MainClient extends JFrame {
 				writer.println(nickname + ": I have disconnected!");
 				writer.println("keySecretKPPMessanger11"); // secret key to delete threads
 				writer.flush(); // close it for God
+				writer.close();
+				try 
+				{
+					reader.close();
+				} catch (IOException e1) 
+				{
+					System.out.println("Error 399! I'm in client. Reader closed incorrect!");
+					e1.printStackTrace();
+				}
+				serverObtaining.interrupt();
+				try 
+				{
+					String SQL = "UPDATE `logins` SET isOnline=0 WHERE nick=\""+nickname+"\"";
+					Statement s = c.createStatement();
+					s.executeUpdate(SQL);
+					c.close();
+				} 
+				catch (SQLException exc) 
+				{
+					System.out.println("Error #237! Problems w/ SQL. I'm in main client.");
+					exc.printStackTrace();
+				}
 				System.exit(0);
 				}
 			}
@@ -414,15 +524,41 @@ public class MainClient extends JFrame {
 							}
 							else
 							{
-								if(message.startsWith("prIvaTeMeSsSaGGGe123"))
+								if(message.startsWith("prIvaTeMeSsSaGGGe123"+nickname))
 								{
-									String msgPrivate = message.substring(20);
-									txtArea.append(msgPrivate + '\n');
+									int width = nickname.length();
+									String msgPrivate = message.substring(20+width);
+									int cut = msgPrivate.indexOf(' ') + 1;
+									String login = msgPrivate.substring(0, cut-2);
+									//System.out.println("LOGIN IS: " + login);
+									for(int i=0; i<privates.size(); i++)
+									{
+										if(privates.get(i).equals(login))
+										{
+											txtArea.append(msgPrivate + '\n');
+										}
+										else
+										{
+											privates.add(login);
+						                	privatePane.setVisible(true);
+						                	privatePane.addTab(login, createPane(login));
+										}
+									}
+									
 								}
 								else
 								{
-									txtHistory.append(message + '\n');
+									if(message.startsWith("spEcIalFORRecieveRR5"))
+									{
+										String msgPrivate = message.substring(20);
+										txtArea.append(msgPrivate + '\n');
+									}
+									else
+									{
+										txtHistory.append(message + '\n');
+									}
 								}
+								
 							}
 						}
 					
@@ -475,13 +611,14 @@ public class MainClient extends JFrame {
         }
     }
 	
-	  JPanel createPane(String pName) 
+	  static JPanel createPane(String pName) 
 	  {
 		  	JPanel panel = new JPanel();
 			panel.setLayout(new BorderLayout(0, 0));
 			
 			txtArea = new JTextArea();
-			txtArea.setFont(new Font("Monospaced", Font.PLAIN, 13));
+			txtArea.setFont(new Font("Monospaced", Font.PLAIN, 12));
+			txtArea.setEditable(false);
 			txtArea.setLineWrap(true);
 			txtArea.setWrapStyleWord(true);
 			JScrollPane scroll = new JScrollPane();

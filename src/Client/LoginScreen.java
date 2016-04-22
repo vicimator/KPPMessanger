@@ -23,6 +23,7 @@ import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.EmptyBorder;
+
 import java.awt.Toolkit;
 
 
@@ -180,8 +181,10 @@ private void initGUI()
 private void check(String nickname, String password)
 	{
 		String checker;
+		int checks = 0;
 		boolean check_log = false;
 		boolean check_pass = false;
+		boolean check_online = false;
 		setDB();
 		
 		try 
@@ -195,7 +198,7 @@ private void check(String nickname, String password)
 				for(int i=1; i<=x; i++)
 				{
 					checker = rs.getString(i);
-					if(checker.equals(nickname)) 
+					if(checker.equals(nickname))
 						{
 						check_log = true;
 						break;
@@ -214,17 +217,51 @@ private void check(String nickname, String password)
 					if(checker.equals(password)) check_pass = true;
 			}
 			
-		c.close();	
+			rs = st.executeQuery("SELECT isOnline FROM `logins` WHERE logins.nick=\""+nickname+"\"");
+			
+			md = rs.getMetaData();
+			x = md.getColumnCount();
+			
+			while(rs.next())
+			{
+					checks = rs.getInt(x);
+					if(checks == 1) check_online = true;
+			}
+		//c.close();
 		}
 		catch (SQLException e) 
 		{
-			System.out.println("Error #175! Problems w/ SQL. I'm in log screen.");
+			System.out.println("Error #234! Problems w/ SQL. I'm in log screen.");
 			e.printStackTrace();
 		}	
 		// DESICION
 		if(check_log && check_pass)
 		{
-			login(nickname);
+			if(check_online)
+			{
+				txtPassword.setText("");
+				txtLogin.setText("");
+				txtLogin.requestFocus();
+				new Info_online();
+			}
+			else
+			{
+			try 
+			{
+				checks = 1;
+				String SQL = "UPDATE `logins` SET isOnline=1 WHERE nick=\""+nickname+"\"";
+				Statement s=c.createStatement();
+				s.executeUpdate(SQL);
+				c.close();
+				checks = 0;
+				login(nickname);
+			} 
+			catch (SQLException e) 
+			{
+				System.out.println("Error #255! Problems w/ SQL. I'm in log screen.");
+				e.printStackTrace();
+			}
+			}
 		}
 		else
 		{
