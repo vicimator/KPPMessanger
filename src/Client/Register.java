@@ -144,6 +144,7 @@ public class Register extends JFrame {
 							String SQL = "INSERT INTO `kppmessanger`.`logins` (`nick`, `pass`) VALUES('"+log+"', '"+pass1+"')";
 							st.executeUpdate(SQL);
 							c.close();
+							new Info_register();
 							dispose();
 						}
 						else
