@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 5.7.9, for Win64 (x86_64)
 --
--- Host: localhost    Database: kppmessanger
+-- Host: 127.0.0.1    Database: kppmessanger
 -- ------------------------------------------------------
 -- Server version	5.7.11-log
 
@@ -30,7 +30,7 @@ CREATE TABLE `logins` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
   UNIQUE KEY `nick_UNIQUE` (`nick`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -39,7 +39,7 @@ CREATE TABLE `logins` (
 
 LOCK TABLES `logins` WRITE;
 /*!40000 ALTER TABLE `logins` DISABLE KEYS */;
-INSERT INTO `logins` VALUES (1,'admin','admin1',0),(2,'Snoopey','79914003',0),(3,'Test','12345',0),(4,'Test2','123',0),(5,'Test3','123456',0),(6,'VeryVeryLongNicknameForCheck','111',0);
+INSERT INTO `logins` VALUES (1,'admin','admin1',0),(2,'Snoopey','79914003',0),(3,'Test','12345',0),(4,'Test2','123',0),(5,'Test3','123456',0),(6,'VeryVeryLongNicknameForCheck','111',0),(10,'xyu','12345',0),(11,'fuck','fuck',0),(12,'Mary','123',0);
 /*!40000 ALTER TABLE `logins` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -52,4 +52,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-04-22 23:32:21
+-- Dump completed on 2016-04-25 14:28:54
