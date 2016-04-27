@@ -83,6 +83,7 @@ public class MainClient extends JFrame {
 	private static JTextArea txtArea;
 	private static Connection c;
 	private static Statement st;
+    private static JButton deletePanes;
 	
 	public static void toList(String nick)
 	{
@@ -406,6 +407,31 @@ public class MainClient extends JFrame {
 		gbc_privatePane.gridx = 0;
 		gbc_privatePane.gridy = 5;
 		contentPane.add(privatePane, gbc_privatePane);
+		
+		deletePanes = new JButton("Remove pane");
+		deletePanes.setVisible(false);
+		deletePanes.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0)
+			{
+				int index = privatePane.getSelectedIndex();
+				if (index != -1) 
+	            {
+	            	privatePane.remove(index);
+	            }
+				privates.remove(index);
+				if(index == 0)
+				{
+				privatePane.setVisible(false);
+				deletePanes.setVisible(false);
+				}
+			}
+		});
+		GridBagConstraints gbc_deletePanes = new GridBagConstraints();
+		gbc_deletePanes.anchor = GridBagConstraints.SOUTH;
+		gbc_deletePanes.insets = new Insets(0, 0, 5, 5);
+		gbc_deletePanes.gridx = 3;
+		gbc_deletePanes.gridy = 6;
+		contentPane.add(deletePanes, gbc_deletePanes);
 
 		btnPrivate.addActionListener(new ActionListener() 
 		{
@@ -435,6 +461,7 @@ public class MainClient extends JFrame {
 		                	{
 		                	privates.add(pName);
 		                	privatePane.setVisible(true);
+		                	deletePanes.setVisible(true);
 		                	privatePane.addTab(pName, createPane(pName));
 		                	//new Private(pName, nickname);
 		                	}
@@ -531,18 +558,23 @@ public class MainClient extends JFrame {
 									int cut = msgPrivate.indexOf(' ') + 1;
 									String login = msgPrivate.substring(0, cut-2);
 									//System.out.println("LOGIN IS: " + login);
+									boolean iChecks = true;
 									for(int i=0; i<privates.size(); i++)
 									{
 										if(privates.get(i).equals(login))
 										{
 											txtArea.append(msgPrivate + '\n');
+											iChecks = false;
+											break;
 										}
-										else
-										{
-											privates.add(login);
-						                	privatePane.setVisible(true);
-						                	privatePane.addTab(login, createPane(login));
-										}
+									}
+									if(iChecks)
+									{
+										privates.add(login);
+					                	privatePane.setVisible(true);
+					                	deletePanes.setVisible(true);
+					                	privatePane.addTab(login, createPane(login));
+					                	txtArea.append(msgPrivate + '\n');
 									}
 									
 								}
@@ -611,7 +643,7 @@ public class MainClient extends JFrame {
         }
     }
 	
-	  static JPanel createPane(String pName) 
+	  static JPanel createPane(final String pName) 
 	  {
 		  	JPanel panel = new JPanel();
 			panel.setLayout(new BorderLayout(0, 0));
@@ -632,7 +664,7 @@ public class MainClient extends JFrame {
 			panel_1.setLayout(new BorderLayout(0, 0));
 			panel_1.setBorder(BorderFactory.createEmptyBorder(5, 0, 0, 0));
 			
-			JTextField txtField = new JTextField();
+			final JTextField txtField = new JTextField();
 			panel_1.add(txtField, BorderLayout.CENTER);
 			txtField.setColumns(10);
 			

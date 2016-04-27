@@ -66,7 +66,7 @@ public class Private extends JFrame
 		
 		virtualNet();
 		
-		Thread serverOb = new Thread(new Obdt());
+		final Thread serverOb = new Thread(new Obdt());
 		serverOb.start();
 		
 		GridBagLayout gridBagLayout = new GridBagLayout();

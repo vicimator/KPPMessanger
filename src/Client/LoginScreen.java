@@ -153,7 +153,7 @@ private void initGUI()
 	txtPassword.setBounds(90, 160, 120, 25);
 	contentPane.add(txtPassword);
 	
-	JLabel regLabel = new JLabel();
+	final JLabel regLabel = new JLabel();
 	regLabel.setText("<html><u>Sign up</u></html>");
 	regLabel.addMouseListener(new MouseAdapter() {
 		
